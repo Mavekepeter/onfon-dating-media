@@ -1,0 +1,15 @@
+<svg width="220" height="60" viewBox="0 0 220 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="10" y="40" font-family="Segoe UI, sans-serif" font-size="28" fill="#D60000" font-weight="bold">
+    OnFon
+  </text>
+  <text x="110" y="40" font-family="Segoe UI, sans-serif" font-size="20" fill="#D60000" font-weight="500" letter-spacing="1">
+    Media
+  </text>
+
+  <!-- Signal Waves -->
+  <circle cx="95" cy="30" r="3" fill="#D60000"/>
+  <path d="M90 30a5 5 0 0 1 10 0" stroke="#D60000" stroke-width="1.5" fill="none"/>
+  <path d="M87 30a8 8 0 0 1 16 0" stroke="#D60000" stroke-width="1.2" fill="none"/>
+  <path d="M84 30a11 11 0 0 1 22 0" stroke="#D60000" stroke-width="1" fill="none"/>
+</svg>
+

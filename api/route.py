@@ -20,7 +20,7 @@ def register():
     )
     db.session.add(user)
     db.session.commit()
-    return jsonify({'message': 'User registered successfully'})
+    return jsonify({'message': 'Registered successfully!! welcome at onfon ✨✨🎉🎉🎉🎉✨✨'})
 
 @routes.route('/details', methods=['POST'])
 def add_details():
@@ -38,7 +38,7 @@ def add_details():
     )
     db.session.add(details)
     db.session.commit()
-    return jsonify({'message': 'Details added successfully'})
+    return jsonify({'message': 'you details have being added, Thank you for choosing onfon media😊😊😊'})
 
 @routes.route('/description', methods=['POST'])
 def add_description():
@@ -52,7 +52,7 @@ def add_description():
     )
     db.session.add(description)
     db.session.commit()
-    return jsonify({'message': 'Description saved'})
+    return jsonify({'message': 'You are wonderfull congrates🌹🌹🌹🌹 desc added'})
 
 
 @routes.route('/match', methods=['POST'])
@@ -60,7 +60,7 @@ def match_request():
     data = request.json
     user = User.query.filter_by(phone_number=data['phone']).first()
     if not user:
-        return jsonify({'message': 'User not found'}), 404
+        return jsonify({'message': 'User not found '}), 404
     match = MatchRequest(
         requester_id=user.id,
         age_range=data['age_range'],
@@ -110,10 +110,15 @@ def describe_user(phone):
 @routes.route('/interest', methods=['POST'])
 def express_interest():
     data = request.json
+    print("Received data:", data)
+
+    if not data or 'phone' not in data or 'interests' not in data:
+        return jsonify({'error': 'Missing phone or interests'}), 400
+
     interest = Interest(
-        from_user=data['from_phone'],
-        to_user=data['to_phone']
+        from_user=data['phone'],
+        to_user=data['interests'].strip()  
     )
     db.session.add(interest)
     db.session.commit()
-    return jsonify({'message': 'Interest recorded'})
+    return jsonify({'message': 'Interest send hold on we will reach to you in a few😉🤞🤞✌'})

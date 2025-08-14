@@ -3,38 +3,36 @@ version: "3.9"
 services:
   mysql:
     image: mysql:8.0
-    container_name: dating-mysql
+    container_name: message-mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: dating_app
+      MYSQL_DATABASE: message_db
       MYSQL_USER: user
       MYSQL_PASSWORD: userpassword
     ports:
       - "3306:3306"
     volumes:
-      - db_data:/var/lib/mysql
+      - message_db_data:/var/lib/mysql
     networks:
-      - dating-net
+      - message-net
 
   backend:
     build: .
-    container_name: dating-backend
+    container_name: message-api
     restart: always
     ports:
-      - "5001:5001"
+      - "5001:5001" 
     environment:
       FLASK_ENV: development
-      SQLALCHEMY_DATABASE_URI: mysql+pymysql://root:Maveke12@onfon-mysql:3306/onfon_db
+      SQLALCHEMY_DATABASE_URI: mysql+pymysql://root:rootpassword@mysql:3306/message_db
     networks:
-      - dating-net
+      - message-net
     volumes:
       - .:/app
 
 volumes:
-  db_data:
+  message_db_data:
 
 networks:
-  dating-net:
-
-
+  message-net:

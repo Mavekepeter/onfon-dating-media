@@ -3,3 +3,7 @@ Flask-SQLAlchemy
 PyMySQL
 Werkzeug
 gunicorn
+requests
+flask-cors
+python-dotenv
+cryptography

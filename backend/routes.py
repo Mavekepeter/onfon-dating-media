@@ -24,7 +24,77 @@ def uploaded_file(filename):
     return send_from_directory('uploads', filename)
 
 @routes.route('/register', methods=['POST'])
+@routes.route('/register', methods=['POST'])
 def register():
+    try:
+        # Try to get JSON data first
+        data = request.get_json(silent=True) or request.form
+
+        name = data.get('name')
+        email = data.get('email')
+        password = data.get('password')
+        phone = data.get('phone')
+        age = data.get('age')
+        gender = data.get('gender')
+        county = data.get('county')
+        town = data.get('town')
+
+        if not all([name, email, password, phone, age, gender, county, town]):
+            return jsonify({'error': 'All fields are required'}), 400
+
+        try:
+            age = int(age)
+        except ValueError:
+            return jsonify({'error': 'Age must be a number'}), 400
+
+        # Handle image file if present
+        image_file = request.files.get('image')
+        image_filename = None
+        if image_file:
+            image_filename = image_file.filename
+            image_file.save(f'uploads/{image_filename}')
+
+        # Check for existing users
+        if User.query.filter_by(email=email).first():
+            return jsonify({'error': 'Email already registered'}), 409
+        if User.query.filter_by(phone_number=phone).first():
+            return jsonify({'error': 'Phone number already registered'}), 409
+
+        # Create new user
+        user = User(
+            name=name,
+            email=email,
+            password=generate_password_hash(password),
+            phone_number=phone,
+            age=age,
+            gender=gender,
+            county=county,
+            town=town,
+            image_filename=image_filename,
+            registered_on=datetime.utcnow()
+        )
+        db.session.add(user)
+        db.session.commit()
+
+        # Return full JSON with all fields
+        return jsonify({
+            "message": "Registration successful",
+            "user": {
+                "name": name,
+                "email": email,
+                "phone": phone,
+                "age": age,
+                "gender": gender,
+                "county": county,
+                "town": town,
+                "image_filename": image_filename
+            }
+        }), 201
+
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({'error': str(e)}), 500
+
     try:
         print("Incoming request data:")
         print("Form:", request.form)

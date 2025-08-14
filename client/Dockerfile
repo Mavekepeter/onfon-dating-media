@@ -5,27 +5,27 @@ FROM node:20-alpine AS build
 WORKDIR /app
 
 # Step 3: Copy dependency files
-COPY package.json ./
-COPY package-lock.json ./
-
+COPY package.json package-lock.json ./
 
 # Step 4: Install dependencies
 RUN npm install
 
-# Step 5: Copy the rest of the source code
 COPY . .
 
-# Step 6: Build the app for production
+ARG VITE_BACKEND_URL
+ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
+
+# Step 7: Build the app for production
 RUN npm run build
 
-# Step 7: Use lightweight Nginx to serve static files
+# Step 8: Use lightweight Nginx to serve static files
 FROM nginx:alpine
 
-# Step 8: Copy build output to Nginx public folder
-COPY --from=build /app/build /usr/share/nginx/html
+# Step 9: Copy build output to Nginx public folder
+COPY --from=build /app/dist /usr/share/nginx/html
 
-# Step 9: Expose port 80
+# Step 10: Expose port 80
 EXPOSE 80
 
-# Step 10: Start Nginx
+# Step 11: Start Nginx
 CMD ["nginx", "-g", "daemon off;"]

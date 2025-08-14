@@ -1,40 +1,26 @@
-version: "3.9"
+networks:
+  onfon-net:
 
 services:
-  mysql:
+  onfon-mysql:
     image: mysql:8.0
-    container_name: dating-mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: dating_app
-      MYSQL_USER: user
-      MYSQL_PASSWORD: userpassword
+    container_name: onfon-mysql
     ports:
       - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-    networks:
-      - dating-net
-
-  backend:
-    build: .
-    container_name: dating-backend
-    restart: always
-    ports:
-      - "5001:5001"
     environment:
-      FLASK_ENV: development
-      SQLALCHEMY_DATABASE_URI: mysql+pymysql://root:Maveke12@onfon-mysql:3306/onfon_db
+      MYSQL_ROOT_PASSWORD: Maveke12  
+      MYSQL_DATABASE: onfon_db
     networks:
-      - dating-net
-    volumes:
-      - .:/app
+      - onfon-net
 
-volumes:
-  db_data:
-
-networks:
-  dating-net:
-
-
+  onfon-backend:
+    build: .
+    container_name: onfon-backend
+    environment:
+      FLASK_APP: app.py
+      FLASK_ENV: production
+      DATABASE_URL: mysql+pymysql://root:Maveke12@onfon-mysql:3306/onfon_db
+    ports:
+      - "5000:5000"
+    networks:
+      - onfon-net

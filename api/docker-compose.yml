@@ -9,7 +9,7 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: userpassword
     ports:
-      - "3306:3306"
+      - "3307:3306"   # Host port changed to 3307
     volumes:
       - message_db_data:/var/lib/mysql
     networks:

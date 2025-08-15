@@ -9,7 +9,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config.from_object(Config)
 
-    CORS(app, origins=["http://localhost:5173"], supports_credentials=True)
+    CORS(app, origins=["http://localhost"], supports_credentials=True)
 
     db.init_app(app)
 

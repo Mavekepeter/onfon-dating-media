@@ -27,7 +27,13 @@ def uploaded_file(filename):
 @routes.route('/register', methods=['POST'])
 def register():
     try:
-        # Try to get JSON data first
+        # Log incoming request for debugging
+        print("Incoming request data:")
+        print("Form:", request.form)
+        print("Files:", request.files)
+        print("JSON:", request.get_json(silent=True))
+
+        # Get JSON or form data
         data = request.get_json(silent=True) or request.form
 
         name = data.get('name')
@@ -47,20 +53,21 @@ def register():
         except ValueError:
             return jsonify({'error': 'Age must be a number'}), 400
 
-        # Handle image file if present
+        # Handle image upload
         image_file = request.files.get('image')
         image_filename = None
-        if image_file:
-            image_filename = image_file.filename
-            image_file.save(f'uploads/{image_filename}')
+        if image_file and allowed_file(image_file.filename):
+            image_filename = secure_filename(image_file.filename)
+            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+            image_file.save(os.path.join(UPLOAD_FOLDER, image_filename))
 
-        # Check for existing users
+        # Check for duplicates
         if User.query.filter_by(email=email).first():
             return jsonify({'error': 'Email already registered'}), 409
         if User.query.filter_by(phone_number=phone).first():
             return jsonify({'error': 'Phone number already registered'}), 409
 
-        # Create new user
+        # Create user
         user = User(
             name=name,
             email=email,
@@ -76,7 +83,6 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        # Return full JSON with all fields
         return jsonify({
             "message": "Registration successful",
             "user": {
@@ -92,62 +98,9 @@ def register():
         }), 201
 
     except Exception as e:
-        print("Error:", e)
+        print("Error in /register:", e)
         return jsonify({'error': str(e)}), 500
 
-    try:
-        print("Incoming request data:")
-        print("Form:", request.form)
-        print("Files:", request.files)
-
-        name = request.form.get('name')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        phone = request.form.get('phone')
-        age = request.form.get('age')
-        gender = request.form.get('gender')
-        county = request.form.get('county')
-        town = request.form.get('town')
-
-        if not all([name, email, password, phone, age, gender, county, town]):
-            return jsonify({'error': 'All fields are required'}), 400
-
-        try:
-            age = int(age)
-        except ValueError:
-            return jsonify({'error': 'Age must be a number'}), 400
-
-        image_file = request.files.get('image')
-        image_filename = None
-        if image_file:
-            image_filename = image_file.filename
-            image_file.save(f'uploads/{image_filename}')  
-
-        if User.query.filter_by(email=email).first():
-            return jsonify({'error': 'Email already registered'}), 409
-        if User.query.filter_by(phone_number=phone).first():
-            return jsonify({'error': 'Phone number already registered'}), 409
-
-        user = User(
-            name=name,
-            email=email,
-            password=generate_password_hash(password),  
-            phone_number=phone,
-            age=age,
-            gender=gender,
-            county=county,
-            town=town,
-            image_filename=image_filename,
-            registered_on=datetime.utcnow()
-        )
-        db.session.add(user)
-        db.session.commit()
-
-        return jsonify({'message': 'Registration successful'}), 201
-
-    except Exception as e:
-        print("Error:", e)
-        return jsonify({'error': str(e)}), 500
 
 
 @routes.route('/login', methods=['POST'])

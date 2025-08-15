@@ -5,7 +5,7 @@ from models import db
 from route import routes
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:5173"], supports_credentials=True)
+CORS(app, origins=["http://localhost"], supports_credentials=True)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:rootpassword@mysql:3306/message_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -17,4 +17,4 @@ app.register_blueprint(routes)
 if __name__ == '__main__':
     with app.app_context():
         db.create_all() 
-    app.run(debug=True, port=5001)
+    app.run(debug=True, host="0.0.0.0", port=5001)

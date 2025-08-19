@@ -23,7 +23,7 @@ const Login = ({ onClose }) => {
     setSuccess("");
   };
 
-  const onSubmitHandler = async (e) => {
+ const onSubmitHandler = async (e) => {
   e.preventDefault();
   resetMessages();
 
@@ -44,7 +44,7 @@ const Login = ({ onClose }) => {
         formData.append("image", image);
       }
 
-      response = await axios.post(`${backendUrl}/register`, formData, {
+      response = await axios.post(`http://127.0.0.1:5000/register`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -53,14 +53,14 @@ const Login = ({ onClose }) => {
       setSuccess(response.data.message);
     } else {
       const payload = { email, password };
-      response = await axios.post(`${backendUrl}/login`, payload, {
+      response = await axios.post(`http://127.0.0.1:5000/login`, payload, {
         headers: {
           "Content-Type": "application/json",
         },
       });
 
       setSuccess(response.data.message);
-      navigate('/match', { state: { user: loggedInUser } });
+      navigate('/match', { state: { user: response.data.user } });
       console.log("Logged in user:", response.data.user);
     }
   } catch (err) {
@@ -71,6 +71,7 @@ const Login = ({ onClose }) => {
     }
   }
 };
+
 
   return (
     <div

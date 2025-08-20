@@ -1,7 +1,6 @@
 services:
   mysql:
     image: mysql:8.0
-    container_name: message-mysql-new
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
@@ -18,7 +17,6 @@ services:
   backend:
     build:
       context: ../api
-    container_name: message-api
     restart: always
     ports:
       - "5001:5001"
@@ -33,7 +31,6 @@ services:
   client:
     build:
       context: ../client
-    container_name: message-client
     restart: always
     ports:
       - "3000:80"

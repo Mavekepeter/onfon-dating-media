@@ -9,25 +9,26 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: userpassword
     ports:
-      - "3307:3306"   # Host port changed to 3307
+      - "3307:3306"   
     volumes:
       - message_db_data:/var/lib/mysql
     networks:
       - message-net
 
-  backend:
-    build: .
-    container_name: message-api
-    restart: always
-    ports:
-      - "5001:5001" 
-    environment:
-      FLASK_ENV: development
-      SQLALCHEMY_DATABASE_URI: mysql+pymysql://root:rootpassword@mysql:3306/message_db
-    networks:
-      - message-net
-    volumes:
-      - .:/app
+backend:
+  build:
+    context: ./api
+  container_name: message-api
+  restart: always
+  ports:
+    - "5001:5001"
+  environment:
+    FLASK_ENV: development
+    SQLALCHEMY_DATABASE_URI: mysql+pymysql://root:rootpassword@mysql:3306/message_db
+  networks:
+    - message-net
+  volumes:
+    - ./api:/app
 
 volumes:
   message_db_data:

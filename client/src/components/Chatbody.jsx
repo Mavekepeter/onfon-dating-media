@@ -26,7 +26,7 @@ const Chatbody = () => {
     try {
       switch (formType) {
         case 'register':
-          url = 'http://localhost:5001/register'
+          url = 'http://backend:5001/register'
           payload = {
             phone,
             name: values[0],

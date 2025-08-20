@@ -1,7 +1,7 @@
 FROM python:3.12-slim
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
@@ -14,4 +14,5 @@ COPY . .
 
 EXPOSE 5001
 
+# ✅ Run Gunicorn against app.py's "app" instance
 CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5001", "--workers", "2"]

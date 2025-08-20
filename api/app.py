@@ -5,17 +5,12 @@ from models import db
 from route import routes
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
+CORS(app, origins=["http://localhost"], supports_credentials=True)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:rootpassword@mysql:3306/message_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
-@app.route("/")
-def home():
-    return "Hello World!"
+
 db.init_app(app)
 
 app.register_blueprint(routes)

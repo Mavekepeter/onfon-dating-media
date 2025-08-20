@@ -8,11 +8,10 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-RUN pip install cryptography
-
+RUN pip install cryptography gunicorn
 
 COPY . .
 
 EXPOSE 5001
 
-CMD ["python", "app.py"]
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5001", "--workers", "2"]

@@ -1,7 +1,7 @@
 services:
   mysql:
     image: mysql:8.0
-    container_name: message-mysql
+    container_name: message-mysql-new
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
@@ -9,14 +9,15 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: userpassword
     ports:
-      - "3307:3306"   # Host port 3307 -> container port 3306
+      - "3307:3306"
     volumes:
       - message_db_data:/var/lib/mysql
     networks:
       - message-net
 
   backend:
-    build: .
+    build:
+      context: ../api
     container_name: message-api
     restart: always
     ports:
@@ -27,21 +28,19 @@ services:
     networks:
       - message-net
     volumes:
-      - .:/app
+      - ./api:/app
 
   client:
     build:
-      context: ./client   # path to your client folder (where the Dockerfile is)
-      dockerfile: Dockerfile
-      args:
-        VITE_BACKEND_URL: "http://backend:5001"   # point frontend to backend service
+      context: ../client
     container_name: message-client
+    restart: always
     ports:
-      - "8080:80"   # access React build via http://localhost:8080
+      - "3000:80"
+    environment:
+      VITE_BACKEND_URL: http://localhost:5001
     networks:
       - message-net
-    depends_on:
-      - backend
 
 volumes:
   message_db_data:
